@@ -1,0 +1,5 @@
+name: Phan
+description: Analyze a PHP codebase with Phan
+runs:
+  using: docker
+  image: Dockerfile
