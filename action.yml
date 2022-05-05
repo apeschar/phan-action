@@ -1,5 +1,12 @@
 name: Phan
 description: Analyze a PHP codebase with Phan
+author: Albert Peschar
+inputs:
+  token:
+    description: "your GITHUB_TOKEN"
+    required: true
 runs:
   using: docker
   image: Dockerfile
+  env:
+    GITHUB_TOKEN: ${{ inputs.token }}
