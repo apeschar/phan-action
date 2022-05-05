@@ -39,6 +39,7 @@ function main(array $argv): int {
             sprintf('Authorization: Bearer %s', env('GITHUB_TOKEN')),
             'Content-Type: application/json',
         ],
+        CURLOPT_USERAGENT => 'apeschar/phan-action',
         CURLOPT_POSTFIELDS => json_encode($checkRun, flags: JSON_THROW_ON_ERROR),
         CURLOPT_FAILONERROR => true,
         CURLOPT_RETURNTRANSFER => true,
