@@ -24,7 +24,7 @@ function main(array $argv): int {
 
     $baseOutput = [
         'title' => 'Phan static analysis',
-        'summary' => sprintf('There are %d issues.', $issues),
+        'summary' => sprintf('There are %d issues.', sizeof($issues)),
     ];
 
     $checkRun = [
