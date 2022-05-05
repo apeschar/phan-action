@@ -48,7 +48,6 @@ function main(array $argv): int {
         CURLOPT_USERAGENT => 'apeschar/phan-action',
         CURLOPT_POSTFIELDS => json_encode($checkRun, flags: JSON_THROW_ON_ERROR),
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_VERBOSE => true,
     ])) {
         throw new RuntimeException(sprintf(
             "curl_setopt_array: (%d) %s",
@@ -98,7 +97,6 @@ function main(array $argv): int {
             CURLOPT_USERAGENT => 'apeschar/phan-action',
             CURLOPT_POSTFIELDS => json_encode($patch, flags: JSON_THROW_ON_ERROR),
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_VERBOSE => true,
         ])) {
             throw new RuntimeException(sprintf(
                 "curl_setopt_array: (%d) %s",
