@@ -20,14 +20,20 @@ function main(array $argv): int {
 
     $issues = json_decode($contents, true, flags: JSON_THROW_ON_ERROR);
 
+    $annotations = get_annotations($issues);
+
+    $baseOutput = [
+        'title' => 'Phan static analysis',
+        'summary' => sprintf('There are %d issues.', $issues),
+    ];
+
     $checkRun = [
         'name' => 'phan',
         'head_sha' => env('GITHUB_SHA'),
         'conclusion' => $issues > 0 ? 'failure' : 'success',
         'output' => [
-            'title' => 'Phan static analysis',
-            'summary' => sprintf('There are %d issues.', $issues),
-            'annotations' => get_annotations($issues),
+            ...$baseOutput,
+            'annotations' => get_annotations_chunk($annotations),
         ],
     ];
 
@@ -69,6 +75,57 @@ function main(array $argv): int {
         ));
     }
 
+    $checkRun = json_decode($response, true, flags: JSON_THROW_ON_ERROR);
+
+    while ($chunk = get_annotations_chunk($annotations)) {
+        curl_reset($ch);
+
+        $patch = [
+            'output' => [
+                ...$baseOutput,
+                'annotations' => $chunk,
+            ],
+        ];
+
+        if (!curl_setopt_array($ch, [
+            CURLOPT_CUSTOMREQUEST => 'PATCH',
+            CURLOPT_URL => sprintf('https://api.github.com/repos/%s/check-runs/%d', env('GITHUB_REPOSITORY'), $checkRun['id']),
+            CURLOPT_HTTPHEADER => [
+                'Accept: application/vnd.github.v3+json',
+                sprintf('Authorization: Bearer %s', env('GITHUB_TOKEN')),
+                'Content-Type: application/json',
+            ],
+            CURLOPT_USERAGENT => 'apeschar/phan-action',
+            CURLOPT_POSTFIELDS => json_encode($patch, flags: JSON_THROW_ON_ERROR),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_VERBOSE => true,
+        ])) {
+            throw new RuntimeException(sprintf(
+                "curl_setopt_array: (%d) %s",
+                curl_errno($ch),
+                curl_error($ch),
+            ));
+        }
+
+        $response = curl_exec($ch);
+        if ($response === false) {
+            throw new RuntimeException(sprintf(
+                "Could not patch check run: cURL: (%d) %s",
+                curl_errno($ch),
+                curl_error($ch),
+            ));
+        }
+
+        $status = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        if ($status < 200 || $status > 299) {
+            throw new RuntimeException(sprintf(
+                "Could not patch check run: HTTP %d with body: %s",
+                $status,
+                trim($response),
+            ));
+        }
+    }
+
     return 0;
 }
 
@@ -93,6 +150,10 @@ function get_annotations(array $issues): array {
         ];
     }
     return $result;
+}
+
+function get_annotations_chunk(array &$annotations): array {
+    return array_splice($annotations, 0, 50);
 }
 
 function get_annotation_level(int $severity): string {
