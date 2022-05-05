@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-export -n INPUT_TOKEN
+export -n GITHUB_TOKEN
 
 tmp=$(mktemp)
 cleanup() { rm -f "$tmp"; }
@@ -19,6 +19,5 @@ if [[ ! -s "$tmp" ]]; then
 	exit 1
 fi
 
-export GITHUB_TOKEN="$INPUT_TOKEN"
-
+export GITHUB_TOKEN
 exec php /submit.php "$tmp"
