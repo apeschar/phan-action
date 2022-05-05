@@ -41,7 +41,6 @@ function main(array $argv): int {
         ],
         CURLOPT_USERAGENT => 'apeschar/phan-action',
         CURLOPT_POSTFIELDS => json_encode($checkRun, flags: JSON_THROW_ON_ERROR),
-        CURLOPT_FAILONERROR => true,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_VERBOSE => true,
     ])) {
@@ -58,6 +57,15 @@ function main(array $argv): int {
             "Could not create check run: cURL: (%d) %s",
             curl_errno($ch),
             curl_error($ch),
+        ));
+    }
+
+    $status = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+    if ($status < 200 || $status > 299) {
+        throw new RuntimeException(sprintf(
+            "Could not create check run: HTTP %d with body: %s",
+            $status,
+            trim($response),
         ));
     }
 
