@@ -24,7 +24,11 @@ function main(array $argv): int {
         'name' => 'phan',
         'head_sha' => env('GITHUB_SHA'),
         'conclusion' => $issues > 0 ? 'failure' : 'success',
-        'annotations' => get_annotations($issues),
+        'output' => [
+            'title' => 'Phan static analysis',
+            'summary' => sprintf('There are %d issues.', $issues),
+            'annotations' => get_annotations($issues),
+        ],
     ];
 
     $ch = curl_init();
@@ -33,6 +37,7 @@ function main(array $argv): int {
         CURLOPT_HTTPHEADER => [
             'Accept: application/vnd.github.v3+json',
             sprintf('Authorization: Bearer %s', env('GITHUB_TOKEN')),
+            'Content-Type: application/json',
         ],
         CURLOPT_POSTFIELDS => json_encode($checkRun, flags: JSON_THROW_ON_ERROR),
         CURLOPT_FAILONERROR => true,
