@@ -32,7 +32,7 @@ function main(array $argv): int {
         CURLOPT_URL => sprintf('https://api.github.com/repos/%s/check-runs', env('GITHUB_REPOSITORY')),
         CURLOPT_HTTPHEADER => [
             'Accept: application/vnd.github.v3+json',
-            sprintf('Authorization: token %s', env('GITHUB_TOKEN')),
+            sprintf('Authorization: Bearer %s', env('GITHUB_TOKEN')),
         ],
         CURLOPT_POSTFIELDS => json_encode($checkRun, flags: JSON_THROW_ON_ERROR),
         CURLOPT_FAILONERROR => true,
