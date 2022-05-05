@@ -2,12 +2,10 @@ name: Phan
 description: Analyze a PHP codebase with Phan
 author: Albert Peschar
 inputs:
-  image:
-    description: "Docker image to use; specify 'Dockerfile' to build it on demand"
-    default: docker://ghcr.io/apeschar/phan-action:latest
   token:
     description: "your GITHUB_TOKEN"
     required: true
 runs:
   using: docker
-  image: ${{ inputs.image }}
+  image: Dockerfile
+  # image: docker://ghcr.io/apeschar/phan-action:latest
