@@ -30,7 +30,7 @@ function main(array $argv): int {
     $checkRun = [
         'name' => 'Phan',
         'head_sha' => env('GITHUB_SHA'),
-        'conclusion' => $issues > 0 ? 'failure' : 'success',
+        'conclusion' => getenv('INPUT_STRICT') === 'yes' ? ($issues > 0 ? 'failure' : 'success') : 'neutral',
         'output' => [
             ...$baseOutput,
             'annotations' => get_annotations_chunk($annotations),

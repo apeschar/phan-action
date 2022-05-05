@@ -5,6 +5,9 @@ inputs:
   token:
     description: "your GITHUB_TOKEN"
     required: true
+  strict:
+    description: "if set to 'yes', any issues will cause the check to fail"
+    default: no
 runs:
   using: docker
   image: docker://ghcr.io/apeschar/phan-action:latest
