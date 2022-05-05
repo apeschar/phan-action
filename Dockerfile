@@ -35,5 +35,6 @@ RUN mkdir /opt/phan && \
     ln -snrf /opt/phan/vendor/bin/phan /usr/local/bin/phan
 
 COPY entrypoint.sh /entrypoint.sh
+COPY submit.php /submit.php
 
 ENTRYPOINT ["/entrypoint.sh"]
