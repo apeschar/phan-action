@@ -28,7 +28,7 @@ function main(array $argv): int {
     ];
 
     $checkRun = [
-        'name' => 'phan',
+        'name' => 'Phan',
         'head_sha' => env('GITHUB_SHA'),
         'conclusion' => $issues > 0 ? 'failure' : 'success',
         'output' => [
