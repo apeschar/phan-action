@@ -27,18 +27,15 @@ function main(array $argv): int {
         'annotations' => get_annotations($issues),
     ];
 
-    $url = sprintf('https://api.github.com/repos/%s/check-runs', env('GITHUB_REPOSITORY'));
-
-    fprintf(STDERR, "Submitting check run to %s\n", $url);
-
     $ch = curl_init();
     if (!curl_setopt_array($ch, [
-        CURLOPT_URL => $url,
+        CURLOPT_URL => sprintf('https://api.github.com/repos/%s/check-runs', env('GITHUB_REPOSITORY')),
         CURLOPT_HTTPHEADER => [
             'Accept: application/vnd.github.v3+json',
             sprintf('Authorization: token %s', env('GITHUB_TOKEN')),
         ],
         CURLOPT_POSTFIELDS => json_encode($checkRun, flags: JSON_THROW_ON_ERROR),
+        CURLOPT_FAILONERROR => true,
         CURLOPT_RETURNTRANSFER => true,
     ])) {
         throw new RuntimeException(sprintf(
@@ -54,15 +51,6 @@ function main(array $argv): int {
             "Could not create check run: cURL: (%d) %s",
             curl_errno($ch),
             curl_error($ch),
-        ));
-    }
-
-    $status = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-    if ($status < 200 || $status > 299) {
-        throw new RuntimeException(sprintf(
-            "Could not create check run: Got HTTP %d with body: %s",
-            $status,
-            trim($response)
         ));
     }
 
