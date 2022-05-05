@@ -5,4 +5,4 @@ runs:
   using: docker
   image: docker://ghcr.io/apeschar/phan-action:latest
   env:
-    GITHUB_TOKEN: ${{ github.token }}
+    GITHUB_TOKEN: "${{ github.token }}"
