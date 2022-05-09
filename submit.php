@@ -29,7 +29,7 @@ function main(array $argv): int {
 
     $checkRun = [
         'name' => 'Phan',
-        'head_sha' => env('GITHUB_SHA'),
+        'head_sha' => getenv('INPUT_HEAD_SHA') ?: env('GITHUB_SHA'),
         'conclusion' =>
             getenv('INPUT_STRICT') === 'yes' ?
             (sizeof($issues) > 0 ? 'failure' : 'success') :
