@@ -3,6 +3,7 @@ FROM debian:bullseye
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get -qq update && \
+    apt-get -qq dist-upgrade && \
     apt-get -qq install -y apt-transport-https lsb-release ca-certificates curl
 
 RUN curl -sSLo /usr/share/keyrings/deb.sury.org-php.gpg https://packages.sury.org/php/apt.gpg && \
